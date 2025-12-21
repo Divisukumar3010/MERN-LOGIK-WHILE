@@ -1,0 +1,16 @@
+*{
+  font-family: 'Times New Roman', Times, serif;
+}
+.btn{
+  background-color: green;
+}
+#outer{
+  border: 1px solid black;
+  padding: 5px;
+  font-size: 25px;
+}
+#inner{
+  border: 1px solid black;
+  padding: 5px;
+  font-size: 10px;
+}

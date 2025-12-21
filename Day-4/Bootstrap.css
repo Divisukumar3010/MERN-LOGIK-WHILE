@@ -1,0 +1,42 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: black;
+  color: white;
+}
+
+footer {
+  text-align: center;
+  padding: 10px;
+  background-color: #222;
+  color: white;
+  bottom: 0;
+  width: 100%;
+}
+
+section {
+  height: 86vh;
+  padding-top: 5px;
+  scroll-margin-top: 60px;
+}
+
+#heading h1 {
+  margin-top: 100px;
+}
+
+h2 {
+  margin-top: 0;
+}
+.details{
+  margin-top: 90px;
+}
+.Profile{
+  border-radius: 50%;
+  height: 400px;
+  margin-top: 30px;
+  margin-left: 50px;
+}

@@ -1,0 +1,63 @@
+body {
+  background-image: url('images/blue\ background.avif');
+  background-size: cover;
+  height: 100vh;
+}
+
+.box {
+  height: 150px;
+  width: 150px;
+  position: absolute;
+}
+
+.red {
+  width: 160px;
+  height: 160px;
+  background-color: red;
+  z-index: 2;
+}
+
+.blue {
+  margin-top: 5px;
+  background-color: blue;
+  z-index: 4;
+}
+
+.absolute {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+
+.main-box-1{
+  position: absolute;
+  top: 55%;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 5px;
+  background-color: red;
+  gap: 5px;
+}
+
+.box1 {
+  background-color: rgb(139, 204, 139);
+  height: 100px;
+  width: 100px;
+  top: 55%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main-box-2 {
+  display: flex;
+  grid-template-columns: repeat(2,1fr);
+  gap: 5px;
+}
+
+.box2 {
+  background-color: rgb(139, 204, 139);
+  height: 100px;
+  width: 100px;
+  border: 1px solid blackZ;
+}
