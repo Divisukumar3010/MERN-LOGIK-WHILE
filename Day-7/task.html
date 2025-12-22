@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Dynamic Grid Layout</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: rgb(174, 207, 234);
+    }
+
+    header {
+      background: #333;
+      color: white;
+      text-align: center;
+      padding: 15px;
+      font-size: 24px;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;     /* It is for 2 columns */
+      grid-template-rows: 1fr 1fr;        /* It is for 2 rows */
+      height: 90vh;
+    }
+
+    .grid-item {
+      border: 1px solid #000000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 18px;
+    }
+
+    #coloredText {
+      font-weight: bold;
+      color: blue;
+    }
+
+    button{
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: rgba(1, 247, 1, 0.559);
+      color: rgb(0, 0, 0);
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <header id="header"></header>
+  <div class="grid-container" id="grid"></div>
+  
+  
+
+  <script>
+    document.getElementById("header").innerText = "This is the sample header";
+    const grid = document.getElementById("grid");
+
+    // Box-1 Image
+    const image = document.createElement("div");
+    image.className = "grid-item";
+    image.innerHTML = '<img src="../images/Mern.jpeg" alt="">';
+    grid.appendChild(image);
+
+    // Box-2 Text
+    const text = document.createElement("div");
+    text.className = "grid-item";
+    text.innerHTML = "<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi sunt repellendus numquam corporis iste eum modi atque similique adipisci? Ea officia repellendus vero. Asperiores placeat incidunt iusto eveniet repudiandae laborum.</p>";
+    text.style.padding = "20px";
+    grid.appendChild(text);
+
+    // Box-3 Button
+    const MyButton = document.createElement("div");
+    MyButton.className = "grid-item";
+    const button = document.createElement("button");
+    button.innerText = "Click Me";
+    button.onclick = function () {
+      alert("Button Clicked!");
+    };
+    MyButton.appendChild(button);
+    grid.appendChild(MyButton);
+
+    // Box-4 Colored Text
+    const ColuredText = document.createElement("div");
+    ColuredText.className = "grid-item";
+    const coloredText = document.createElement("div");
+    coloredText.id = "coloredText";
+    coloredText.innerText = "This is colored text!";
+    ColuredText.appendChild(coloredText);
+    grid.appendChild(ColuredText);
+  </script>
+</body>
+
+</html>
