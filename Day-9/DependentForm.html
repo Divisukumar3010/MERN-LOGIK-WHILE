@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dependent Form</title>
+</head>
+<body>
+  <label for="">Are you a Student??</label>
+  <select id="studentStatus" onchange="toggleStudentStatus()">
+    <option value="no">No</option>
+    <option value="yes">Yes</option>
+  </select>
+  <div id="studentDetails" style="display: none; margin-top: 10px;">
+    <label for="CollegeName">College Name:</label>
+    <input type="text" id="collegeName" name="collegeName"><br><br>
+    <label for="grade">Grade:</label>
+    <input type="text" id="grade" name="grade">
+  </div>
+
+  <script>
+    function toggleStudentStatus() {
+      var studentStatus = document.getElementById("studentStatus").value;
+      var studentDetails = document.getElementById("studentDetails");
+
+      if (studentStatus === "yes") {
+        studentDetails.style.display = "block";
+      } else {
+        studentDetails.style.display = "none";
+      }
+    }
+  </script>
+</body>
+</html>

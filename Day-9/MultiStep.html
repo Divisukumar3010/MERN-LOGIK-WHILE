@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi Step Form</title>
+</head>
+
+<body>
+
+  <div id="step-1">
+    <label for="Name">Name:</label>
+    <input type="text" id="Name" name="Name" required>
+    <button type="button" onclick="nextStep(1)">Next</button>
+  </div>
+  <div id="step-2" style="display: none;">
+    <label for="email">Email:</label>
+    <input type="email" id="Email" name="Email" required>
+    <button type="button" onclick="prevStep(2)">Back</button>
+    <button type="button" onclick="nextStep(2)">Next</button>
+  </div>
+  <div id="step-3" style="display: none;">
+    <label for="Phone">Phone:</label>
+    <input type="Phone" id="Phone" name="Phone" required>
+    <button type="button" onclick="prevStep(3)">Back</button>
+    <button type="submit">Submit</button>
+  </div>
+
+  <script>
+    function nextStep(step) {
+      let valid = false;
+
+      if (step === 1) {
+        const name = document.getElementById("Name").value.trim();
+        if (name !== "") valid = true;
+      } else if (step === 2) {
+        const email = document.getElementById("Email").value.trim();
+        if (email !== "") valid = true;
+      } else if (step === 3) {
+        const phone = document.getElementById("Phone").value.trim();
+        if (phone !== "") valid = true;
+      }
+
+      if (valid) {
+        document.getElementById(`step-${step}`).style.display = "none";
+        document.getElementById(`step-${step + 1}`).style.display = "block";
+      } else {
+        alert("Please fill out the field before continuing.");
+      }
+    }
+
+
+    function prevStep(step) {
+      document.getElementById(`step-${step}`).style.display = 'none';
+      document.getElementById(`step-${step - 1}`).style.display = 'block';
+    }
+  </script>
+
+
+</body>
+
+</html>
