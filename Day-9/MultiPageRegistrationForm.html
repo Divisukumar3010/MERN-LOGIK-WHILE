@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registration</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-start: #1e3c72;
+      --bg-end: #2a5298;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --accent: #7c3aed;
+      --accent-2: #06b6d4;
+      --input-bg: #f8fafc;
+      --border: #cbd5e1;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: "Lucida Writing", cursive;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background: linear-gradient(135deg, var(--bg-start), var(--bg-end)) fixed;
+      display: grid;
+      place-items: center;
+      padding: 32px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 720px;
+    }
+
+    .title {
+      text-align: center;
+      color: #ffffff;
+      margin: 0 0 12px;
+      letter-spacing: 0.4px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #e2e8f0;
+      margin: 0 0 24px;
+      font-weight: 900;
+      font-size: 25px;
+    }
+
+    .stepper {
+      display: grid;
+      grid-template-columns: auto 1fr auto 1fr auto;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      backdrop-filter: saturate(140%) blur(4px);
+    }
+
+    .step {
+      display: grid;
+      justify-items: center;
+      gap: 8px;
+      position: relative;
+    }
+
+    .step .circle {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #cbd5e1;
+      color: var(--bg-start);
+      font-weight: 700;
+      transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .step.active .circle {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      transform: translateY(-2px);
+    }
+
+    .step.completed .circle {
+      background: var(--accent-2);
+    }
+
+    .step span {
+      font-weight: 600;
+      color: #e2e8f0;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .stepper .line {
+      height: 3px;
+      width: 100%;
+      border-radius: 999px;
+      background: #cbd5e1;
+    }
+
+    .stepper .line.filled {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    }
+
+    .card {
+      background: radial-gradient(1200px circle at 0% 0%, rgba(124, 58, 237, 0.08), transparent 35%),
+        radial-gradient(1200px circle at 100% 100%, rgba(6, 182, 212, 0.08), transparent 35%),
+        var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 16px;
+      box-shadow:
+        0 20px 25px -5px rgba(2, 8, 23, 0.4),
+        0 10px 10px -5px rgba(2, 8, 23, 0.2);
+      padding: 28px;
+      backdrop-filter: saturate(140%) blur(4px);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .form-grid .full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      letter-spacing: 0.2px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    input[type="date"],
+    input[type="tel"] {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--input-bg);
+      outline: none;
+      transition: border-color 120ms ease, box-shadow 120ms ease, background 120ms ease;
+    }
+
+    input::placeholder {
+      color: #94a3b8;
+    }
+
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.25);
+      background: #ffffff;
+    }
+
+    .gender {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--input-bg);
+    }
+
+    .gender label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .terms {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .terms a {
+      color: var(--accent-2);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .terms a:hover {
+      text-decoration: underline;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .btn {
+      cursor: pointer;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 16px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      color: #ffffff;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 8px 16px rgba(124, 58, 237, 0.25);
+      transition: transform 120ms ease, box-shadow 120ms ease, filter 120ms ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(124, 58, 237, 0.28);
+      filter: brightness(1.05);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 8px 16px rgba(124, 58, 237, 0.22);
+      filter: brightness(0.98);
+    }
+
+    .btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+      box-shadow: none;
+    }
+
+    .helper {
+      text-align: center;
+      margin-top: 16px;
+      color: #ffffffcc;
+      font-size: 13px;
+    }
+
+    .results {
+      margin-top: 24px;
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 20px 25px -5px rgba(2, 8, 23, 0.4);
+      display: none;
+    }
+
+    .results.show {
+      display: block;
+    }
+
+    .results h3 {
+      margin: 0 0 20px;
+      color: var(--text);
+      font-size: 20px;
+    }
+
+    .results-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .result-item {
+      padding: 12px;
+      background: var(--input-bg);
+      border-radius: 8px;
+      border-left: 3px solid var(--accent);
+    }
+
+    .result-item strong {
+      color: var(--muted);
+      font-size: 13px;
+      display: block;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .result-item span {
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+
+    #strength-meter {
+      width: 100%;
+      height: 7px;
+      background-color: #e0e0e0;
+      margin-top: 8px;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+
+    #strength-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: 5px;
+      background-color: red;
+      transition: width 0.3s, background-color 0.3s;
+    }
+
+    #strength-text {
+      margin-top: 10px;
+      font-size: 15px;
+    }
+
+    @media (max-width: 640px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h3 class="subtitle">Registration Form</h3>
+
+    <div class="stepper" aria-label="Progress">
+      <div class="step" data-step="0">
+        <div class="circle">1</div>
+        <span>Basic Info</span>
+      </div>
+      <div class="line"></div>
+      <div class="step" data-step="1">
+        <div class="circle">2</div>
+        <span>Profile</span>
+      </div>
+      <div class="line"></div>
+      <div class="step" data-step="2">
+        <div class="circle">3</div>
+        <span>Security</span>
+      </div>
+    </div>
+
+    <form id="multiForm" class="card" autocomplete="on">
+      <div class="form-step" data-step="0">
+        <div class="form-grid">
+          <div class="full">
+            <label for="rollNumber">Roll number</label>
+            <input type="text" id="rollNumber" name="rollNumber" placeholder="Enter roll number" required>
+          </div>
+          <div>
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Enter username" required>
+          </div>
+          <div>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="Enter email" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-step" data-step="1" hidden>
+        <div class="form-grid">
+          <div>
+            <label for="age">Age</label>
+            <input type="number" id="age" name="age" min="18" max="25" placeholder="Enter age" required>
+          </div>
+          <div>
+            <label for="date">Date Of Birth</label>
+            <input type="date" id="date" name="Date Of Birth">
+          </div>
+          <div>
+            <label for="mobile">Mobile Number</label>
+            <input type="tel" id="mobile" name="mobile" inputmode="numeric" placeholder="Enter mobile number">
+          </div>
+          <div class="full">
+            <label>Gender</label>
+            <div class="gender" role="radiogroup" aria-label="Gender">
+              <label><input type="radio" name="gender" value="male"> Male</label>
+              <label><input type="radio" name="gender" value="female"> Female</label>
+              <label><input type="radio" name="gender" value="prefer_not_to_say"> Prefer not to say</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-step" data-step="2" hidden>
+        <div class="form-grid">
+          <div>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter password" required minlength="8"
+              oninput="checkPasswordStrength()">
+            <p id="passwordHint" style="font-size: 12px; margin: 2px 0 0 0;"></p>
+            <div id="strength-meter">
+              <div id="strength-bar"></div>
+            </div>
+            <p id="strength-text"></p>
+          </div>
+
+          <div>
+            <label for="confirmPassword">Confirm Password</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm password" required
+              minlength="8">
+            <p id="confirmPasswordHint" style="font-size: 12px; margin: 6px 0 0 0;"></p>
+          </div>
+
+          <div class="full terms">
+            <label style="display:flex; align-items:center; gap:10px; margin:0;">
+              <input type="checkbox" id="terms" name="terms" style="width: 18px; height: 18px;">
+              I agree to the <a href="#">terms and conditions</a>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn prev" id="prevBtn">Previous</button>
+        <button type="button" class="btn next" id="nextBtn">Next</button>
+        <button type="submit" class="btn submit" id="submitBtn" hidden>Submit</button>
+      </div>
+    </form>
+
+    <div class="results" id="results">
+      <h3>Submitted Details</h3>
+      <div class="results-grid" id="resultsContent"></div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('multiForm');
+    const steps = [...document.querySelectorAll('.form-step')];
+    const stepIndicators = [...document.querySelectorAll('.step')];
+    const lines = [...document.querySelectorAll('.line')];
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const resultsDiv = document.getElementById('results');
+    const resultsContent = document.getElementById('resultsContent');
+    const passwordInput = document.getElementById('password');
+    const passwordHint = document.getElementById('passwordHint');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const confirmPasswordHint = document.getElementById('confirmPasswordHint');
+    const strengthBar = document.getElementById('strength-bar');
+    const strengthText = document.getElementById('strength-text');
+    let currentStep = 0;
+
+    function updateStepper() {
+      stepIndicators.forEach((indicator, index) => {
+        indicator.classList.toggle('active', index === currentStep);
+        indicator.classList.toggle('completed', index < currentStep);
+      });
+      lines.forEach((line, index) => {
+        line.classList.toggle('filled', index < currentStep);
+      });
+    }
+
+    function showStep(step) {
+      steps.forEach((pane, index) => {
+        pane.hidden = index !== step;
+      });
+      prevBtn.disabled = step === 0;
+      nextBtn.hidden = step === steps.length - 1;
+      submitBtn.hidden = step !== steps.length - 1;
+      updateStepper();
+    }
+
+    function validateStep() {
+      const fields = steps[currentStep].querySelectorAll('input');
+      for (const field of fields) {
+        if (!field.checkValidity()) {
+          field.reportValidity();
+          return false;
+        }
+      }
+      return true;
+    }
+
+    nextBtn.addEventListener('click', () => {
+      if (!validateStep()) return;
+      currentStep = Math.min(currentStep + 1, steps.length - 1);
+      showStep(currentStep);
+    });
+
+    prevBtn.addEventListener('click', () => {
+      currentStep = Math.max(currentStep - 1, 0);
+      showStep(currentStep);
+    });
+
+    passwordInput.addEventListener('input', () => {
+      const password = passwordInput.value;
+      if (password.length === 0) {
+        passwordHint.textContent = '';
+      } else if (password.length < 8) {
+        passwordHint.textContent = 'Password must be at least 8 characters.';
+        passwordHint.style.color = 'red';
+      } else if (!/[A-Z]/.test(password)) {
+        passwordHint.textContent = 'Password must contain at least one uppercase letter.';
+        passwordHint.style.color = 'red';
+      } else if (!/[a-z]/.test(password)) {
+        passwordHint.textContent = 'Password must contain at least one lowercase letter.';
+        passwordHint.style.color = 'red';
+      } else if (!/[0-9]/.test(password)) {
+        passwordHint.textContent = 'Password must contain at least one number.';
+        passwordHint.style.color = 'red';
+      } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+        passwordHint.textContent = 'Password must contain at least one special character.';
+        passwordHint.style.color = 'red';
+      } else {
+        passwordHint.textContent = 'Strong password!';
+        passwordHint.style.color = 'green';
+      }
+
+      if (confirmPasswordInput.value.length > 0) {
+        validateConfirmPassword();
+      }
+    });
+
+    function validateConfirmPassword() {
+      const password = passwordInput.value;
+      const confirmPassword = confirmPasswordInput.value;
+
+      if (confirmPassword.length === 0) {
+        confirmPasswordHint.textContent = '';
+      } else if (password !== confirmPassword) {
+        confirmPasswordHint.textContent = 'Passwords do not match!';
+        confirmPasswordHint.style.color = 'red';
+      } else {
+        confirmPasswordHint.textContent = 'Passwords match!';
+        confirmPasswordHint.style.color = 'green';
+      }
+    }
+
+    function checkPasswordStrength() {
+      const password = passwordInput.value;
+      let strength = 0;
+      if (password.length > 0) strength += 20;
+      if (password.length >= 8) strength += 30;
+      if (/[A-Z]/.test(password)) strength += 20;
+      if (/[0-9]/.test(password)) strength += 20;
+      if (/[^A-Za-z0-9]/.test(password)) strength += 10;
+      strength = Math.min(strength, 100);
+      strengthBar.style.width = strength + '%';
+
+      if (strength < 50) {
+        strengthBar.style.backgroundColor = 'red';
+        strengthText.textContent = 'Strength: Weak';
+        strengthText.style.color = 'red';
+      } else if (strength < 80) {
+        strengthBar.style.backgroundColor = 'orange';
+        strengthText.textContent = 'Strength: Medium';
+        strengthText.style.color = 'orange';
+      } else {
+        strengthBar.style.backgroundColor = 'green';
+        strengthText.textContent = 'Strength: Strong';
+        strengthText.style.color = 'green';
+      }
+    }
+
+    confirmPasswordInput.addEventListener('input', validateConfirmPassword);
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      if (!validateStep()) return;
+      const rollNumber = form.rollNumber.value;
+      const username = form.username.value;
+      const email = form.email.value;
+      const age = form.age.value;
+      const gender = form.gender.value;
+      const date = form.date.value;
+      const mobile = form.mobile.value;
+      const termsAccepted = form.terms.checked;
+
+      const detailsHTML = `
+        <div class="result-item">
+          <strong>Roll Number</strong>
+          <span>${rollNumber || 'Not provided'}</span>
+        </div>
+        <div class="result-item">
+          <strong>Username</strong>
+          <span>${username || 'Not provided'}</span>
+        </div>
+        <div class="result-item">
+          <strong>Email</strong>
+          <span>${email || 'Not provided'}</span>
+        </div>
+        <div class="result-item">
+          <strong>Age</strong>
+          <span>${age || 'Not provided'}</span>
+        </div>
+        <div class="result-item">
+          <strong>Gender</strong>
+          <span>${gender ? gender.charAt(0).toUpperCase() + gender.slice(1) : 'Not provided'}</span>
+        </div>
+        <div class="result-item">
+          <strong>Date</strong>
+          <span>${date || 'Not provided'}</span>
+        </div>
+        <div class="result-item">
+          <strong>Mobile Number</strong>
+          <span>${mobile || 'Not provided'}</span>
+        </div>
+        <div class="result-item">
+          <strong>Terms Accepted</strong>
+          <span>${termsAccepted ? 'Yes' : 'No'}</span>
+        </div>
+      `;
+
+      resultsContent.innerHTML = detailsHTML;
+      resultsDiv.classList.add('show');
+      resultsDiv.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    //showStep(currentStep);
+  </script>
+</body>
+
+</html>
