@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .flexContainer {
+      display: flex;
+      padding: 10px;
+      min-height: 200px;
+      min-width: 200px;
+      border: 1px solid #000;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50px;
+      background-color: #f0f0f0;
+    }
+
+    .subDiv {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .buttonContainer {
+      margin-bottom: 20px;
+      text-align: center;
+      background-color: #282727;
+      padding: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 25px;
+    }
+
+    button:hover {
+      background-color: #b4afaf;
+      color: #fff;
+    }
+    input{
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 25px;
+      border: none;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="buttonContainer">
+    <input type="text" placeholder="Enter UserId">
+    <button onclick="callerFunction()">Fetch Data</button>
+  </div>
+  <div id="main"></div>
+  <script>
+    const fetchData = async (userId) => {
+      const res = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`)
+      if (!res.ok) {
+        alert("Failed to fetch");
+        return;
+      }
+      const data = await res.json();
+      document.getElementById("main").innerHTML = "";
+      const subDiv = document.createElement("div");
+      subDiv.setAttribute("class", "subDiv");
+
+      const userBox = document.createElement("div");
+      userBox.setAttribute("class", "flexContainer");
+      userBox.innerHTML = `
+        <h3>${data.name}</h3
+      `;
+      subDiv.appendChild(userBox);
+      document.getElementById("main").appendChild(subDiv);
+    };
+    const callerFunction = () => {
+      const inputVal = document.querySelector("input").value;
+      if (!inputVal) {
+        alert("Please enter a user ID");
+        return;
+      }
+      console.log(inputVal);
+      fetchData(inputVal);
+    }
+  </script>
+</body>
+
+</html>

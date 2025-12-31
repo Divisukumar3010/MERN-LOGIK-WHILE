@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .flexContainer {
+      display: flex;
+      padding: 10px;
+      min-height: 200px;
+      min-width: 200px;
+      border: 1px solid #000;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50px;
+      background-color: #f0f0f0;
+    }
+    .subDiv {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .buttonContainer {
+      margin-bottom: 20px;
+      text-align: center;
+      background-color: #282727;
+      padding: 20px;
+    }
+    button{
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 25px;
+    }
+    button:hover{
+      background-color: #b4afaf;
+      color: #fff;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- <ol id="UserList"></ol> -->
+
+  <div class="buttonContainer">
+    <button onclick="fetchData()">Click to Fetch Data</button>
+  </div>
+  <div id="main"></div>
+
+
+  <script>
+    const fetchData = async () => {
+      const main = document.getElementById("main");
+      const res = await fetch("https://jsonplaceholder.typicode.com/users/")
+      const data = await res.json();
+      const subDiv = document.createElement("div");
+      subDiv.setAttribute("class","subDiv");
+      data.map((user)=>{
+        subDiv.innerHTML += `<div class="flexContainer">${user.name}</div>`;
+        main.appendChild(subDiv);
+      })
+    };
+  </script>
+</body>
+
+</html>
