@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multiple API Fetch with Loading</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #1f1c2c, #928dab);
+      background-repeat: no-repeat;
+      background-size: cover;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px 20px;
+      color: #fff;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 16px 20px;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      margin-bottom: 20px;
+    }
+
+    input[type="number"] {
+      padding: 12px 16px;
+      font-size: 16px;
+      border-radius: 12px;
+      border: none;
+      outline: none;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      width: 200px;
+    }
+
+    input::placeholder {
+      color: #eee;
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.3);
+      color: #fff;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    #loading {
+      font-weight: bold;
+      margin-bottom: 20px;
+      display: none;
+      animation: pulse 1.2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        opacity: 0.4;
+      }
+
+      50% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0.4;
+      }
+    }
+
+    #output {
+      display: none;
+      max-width: 700px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    #output h2,
+    #output h3 {
+      margin-bottom: 10px;
+    }
+
+    #output ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    #output li {
+      margin-bottom: 10px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="input-group">
+    <input type="number" id="userId" placeholder="Enter user ID">
+    <button onclick="FetchUserAndPosts()">Fetch</button>
+  </div>
+  <p id="loading">Loading...</p>
+  <div id="output"></div>
+
+  <script>
+    async function FetchUserAndPosts() {
+      const userId = document.getElementById('userId').value;
+      const outputDiv = document.getElementById('output');
+      const loading = document.getElementById('loading');
+
+      if (!userId) {
+        alert('Please enter a user ID');
+        return;
+      }
+
+      loading.style.display = 'block';
+      outputDiv.innerHTML = '';
+      outputDiv.style.display = 'none';
+
+      try {
+        const [userResponse, postsResponse] = await Promise.all([
+          fetch(`https://jsonplaceholder.typicode.com/users/${userId}`),
+          fetch(`https://jsonplaceholder.typicode.com/posts?userId=${userId}`)
+        ]);
+
+        if (!userResponse.ok) throw new Error('User not found');
+        if (!postsResponse.ok) throw new Error('Posts not found');
+
+        const userData = await userResponse.json();
+        const postsData = await postsResponse.json();
+
+        outputDiv.innerHTML = `
+          <h2>${userData.name}</h2>
+          <p><strong>Email:</strong> ${userData.email}</p>
+          <h3>Posts</h3>
+          <ul>
+            ${postsData.slice(0, 5).map(p => `<li>${p.title}</li>`).join("")}
+          </ul>
+        `;
+        outputDiv.style.display = 'block';
+      } catch (error) {
+        outputDiv.innerHTML = `<p style="color: red;">${error.message}</p>`;
+        outputDiv.style.display = 'block';
+      } finally {
+        loading.style.display = 'none';
+      }
+    }
+  </script>
+</body>
+
+</html>

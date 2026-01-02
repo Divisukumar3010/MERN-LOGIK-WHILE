@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #1f1c2c, #928dab);
+      background-repeat: no-repeat;
+      background-size: cover;
+      height: 100vh;
+      margin: 10;
+    }
+
+    .flexContainer {
+      display: flex;
+      padding: 10px;
+      min-height: 200px;
+      min-width: 200px;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50px;
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .subDiv {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .buttonContainer {
+      margin-bottom: 20px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 20px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    button {
+      padding: 15px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 25px;
+    }
+
+    button:hover {
+      background-color: #b4afaf;
+      color: black;
+    }
+
+    input {
+      padding: 15px;
+      font-size: 16px;
+      border-radius: 25px;
+      border: none;
+      margin-right: 10px;
+    }
+    #main{
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="buttonContainer">
+    <input type="text" placeholder="Enter UserId">
+    <button onclick="callerFunction()">Fetch Data</button>
+    <button onclick="randonUser()">Random User</button>
+  </div>
+  <div id="main"></div>
+  <script>
+    const fetchData = async (userId) => {
+      const res = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`)
+      if (!res.ok) {
+        alert("Failed to fetch");
+        return;
+      }
+      const data = await res.json();
+      document.getElementById("main").innerHTML = "";
+      const subDiv = document.createElement("div");
+      subDiv.setAttribute("class", "subDiv");
+
+      const userBox = document.createElement("div");
+      userBox.setAttribute("class", "flexContainer");
+      userBox.innerHTML = `
+        <h3>${data.name}</h3
+      `;
+      subDiv.appendChild(userBox);
+      document.getElementById("main").appendChild(subDiv);
+    };
+    const callerFunction = () => {
+      const inputVal = document.querySelector("input").value;
+      if (!inputVal) {
+        alert("Please enter a user ID");
+        return;
+      }
+      console.log(inputVal);
+      fetchData(inputVal);
+    }
+    const randonUser = () => {
+      const inputVal = document.querySelector("input");
+      const randomId = Math.floor(Math.random() * 10) + 1;
+      inputVal.value = randomId;
+      if (randomId > 0 && randomId <= 10) {
+        fetchData(randomId);
+      }
+      else {
+        alert("Random generation error!!!")
+      }
+    }
+  </script>
+</body>
+
+</html>
