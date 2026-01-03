@@ -1,28 +1,28 @@
-// // "use strict";
-// console.log(this); // In global context, 'this' refers to the global object (window in browsers)
+// "use strict";
+console.log(this); // In global context, 'this' refers to the global object (window in browsers)
 
-// function greet() {
-//   console.log(this); // In a regular function, 'this' refers to the global object (undefined in strict mode)
-// }
-// greet();
+function greet() {
+  console.log(this); // In a regular function, 'this' refers to the global object (undefined in strict mode)
+}
+greet();
 
-// const arrow = () => {
-//   console.log(this); // In an arrow function, 'this' refers to the surrounding lexical context (global object here)
-// }
-// const obj = {
-//   name: 'Alice',
-//   greet: function () {
-//     console.log(this.name); // 'this' refers to the object 'obj'
-//   },
-// };
-// obj.greet();
+const arrow = () => {
+  console.log(this); // In an arrow function, 'this' refers to the surrounding lexical context (global object here)
+}
+const obj = {
+  name: 'Alice',
+  greet: function () {
+    console.log(this.name); // 'this' refers to the object 'obj'
+  },
+};
+obj.greet();
 
 
-// function add(a, a, b) {
-//   const output = a + a + b;
-//   console.log(output);
-// }
-// add(1, 2, 3); // Outputs 6 because 'a' is duplicated and takes the last value (2)
+function add(a, a, b) {
+  const output = a + a + b;
+  console.log(output);
+}
+add(1, 2, 3); // Outputs 6 because 'a' is duplicated and takes the last value (2)
 
 //  ------------------------------ Call Method ------------------------------
 function greet1(greeting, message) {
