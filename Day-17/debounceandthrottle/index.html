@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+      background: linear-gradient(45deg, #f3f4f6, #e2e8f0);
+      color: #333;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-size: cover;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+
+    p {
+      font-size: 18px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <button id="btn">trigger event</button>
+  <p id="pressed">0 times</p>
+  <p id="triggered">0 times</p>
+  <script src="throttle.js"></script>
+</body>
+
+</html>
