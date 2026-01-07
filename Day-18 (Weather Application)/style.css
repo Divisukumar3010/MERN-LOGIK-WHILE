@@ -1,0 +1,89 @@
+:root {
+  --bg-dark: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  --bg-light: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  --text-dark: #ffffff;
+  --text-light: #000000;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--bg-dark);
+  color: var(--text-dark);
+  transition: all 0.4s ease;
+}
+body.light-mode {
+  background: var(--bg-light);
+  color: var(--text-light);
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+#main_container {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 20px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border-radius: 15px;
+}
+
+.weather_card,
+#Future_data .card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  transition: transform 0.3s ease;
+}
+
+.weather_card:hover,
+#Future_data .card:hover {
+  transform: translateY(-5px);
+}
+
+.avatar {
+  width: 150px;
+  filter: drop-shadow(0 0 15px cyan);
+  transition: transform 0.4s ease;
+}
+
+.avatar:hover {
+  transform: scale(1.1);
+}
+.avatar {
+  width: 160px;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
