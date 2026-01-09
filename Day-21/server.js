@@ -1,21 +1,21 @@
-// // // Core Module Example
-// const os = require('os');
-// console.log('OS Platform:', os.platform());
+// Core Module Example
+const os = require('os');
+console.log('OS Platform:', os.platform());
 
-// // Local Module Example
-// const add = require("./math");
-// console.log(add(2, 3));
+// Local Module Example
+const add = require("./math");
+console.log(add(2, 3));
 
-// // Third-Party Modules
-// const moment = require('moment');
-// console.log(moment().format('MMMM Do YYYY, h:mm:ss a'));
+// Third-Party Modules
+const moment = require('moment');
+console.log(moment().format('MMMM Do YYYY, h:mm:ss a'));
 
-// // File System Module Example
-// const fs = require('fs');
-// fs.writeFileSync('students.txt', 'Hello Students!');
-// console.log(fs.readFileSync("students.txt","utf-8"));
-// fs.appendFileSync('students.txt', ', This is appended text');
-// fs.unlinkSync('students.txt');
+// File System Module Example
+const fs = require('fs');
+fs.writeFileSync('students.txt', 'Hello Students!');
+console.log(fs.readFileSync("students.txt","utf-8"));
+fs.appendFileSync('students.txt', ', This is appended text');
+fs.unlinkSync('students.txt');
 
 
 // NodeMailer
