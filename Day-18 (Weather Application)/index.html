@@ -5,62 +5,734 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Futuristic Weather App</title>
-
-  <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    :root {
+      --bg-dark: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      --bg-light: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+      --text-dark: #ffffff;
+      --text-light: #000000;
+    }
 
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
 
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="style.css" />
+    body {
+      min-height: 100vh;
+      background: var(--bg-dark);
+      color: var(--text-dark);
+      transition: all 0.4s ease;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body.light-mode {
+      background: var(--bg-light);
+      color: var(--text-light);
+    }
+
+    #weatherCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .content-wrapper {
+      position: relative;
+      z-index: 2;
+    }
+
+    #main_container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 20px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      border-radius: 15px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    #heading {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .weather_card,
+    #Future_data .card {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .weather_card:hover,
+    #Future_data .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .weather_card {
+      max-width: 400px;
+    }
+
+    .temp_display {
+      font-size: 3rem;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+
+    .weather-icon {
+      width: 120px;
+      height: 120px;
+      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+    }
+
+    #character3D {
+      width: 100%;
+      height: 400px;
+      position: relative;
+      border-radius: 15px;
+      overflow: hidden;
+    }
+
+    #search_bar {
+      max-width: 500px;
+      margin: 20px auto;
+    }
+
+    #search_input {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: var(--text-dark);
+      padding: 12px;
+    }
+
+    body.light-mode #search_input {
+      color: var(--text-light);
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    #search_input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    body.light-mode #search_input::placeholder {
+      color: rgba(0, 0, 0, 0.5);
+    }
+
+    .btn-outline-info {
+      border: 2px solid #17a2b8;
+      color: #17a2b8;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-outline-info:hover {
+      background: #17a2b8;
+      color: white;
+      transform: scale(1.05);
+    }
+
+    #themeToggle {
+      position: relative;
+      z-index: 10;
+    }
+
+    #Future_data {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    #Future_data .card {
+      min-height: 200px;
+    }
+
+    #Future_data .card img {
+      width: 60px;
+      height: 60px;
+      margin: 10px auto;
+    }
+
+    @media (max-width: 768px) {
+      #heading {
+        font-size: 1.8rem;
+      }
+
+      .temp_display {
+        font-size: 2.5rem;
+      }
+
+      #character3D {
+        height: 300px;
+      }
+    }
+  </style>
 </head>
 
 <body>
-  <!-- Search Section -->
-  <div class="container-fluid" id="main_container">
-    <h1 id="heading">🌌 Futuristic Weather App</h1>
-    <button id="themeToggle" class="btn btn-sm btn-warning mb-3">
-      🌙 Dark Mode
-    </button>
+  <canvas id="weatherCanvas"></canvas>
 
+  <div class="content-wrapper">
+    <!-- Search Section -->
+    <div class="container-fluid" id="main_container">
+      <h1 id="heading">🌌 Futuristic Weather App</h1>
+      <button id="themeToggle" class="btn btn-sm btn-warning mb-3">
+        🌙 Dark Mode
+      </button>
 
-    <form id="search_bar" class="d-flex">
-      <input type="search" id="search_input" class="form-control me-2" placeholder="Enter city name" />
-      <button class="btn btn-outline-info" type="submit">Search</button>
-    </form>
+      <form id="search_bar" class="d-flex">
+        <input type="search" id="search_input" class="form-control me-2" placeholder="Enter city name" />
+        <button class="btn btn-outline-info" type="submit">Search</button>
+      </form>
 
-    <div id="error" class="text-danger fw-bold mt-2"></div>
-  </div>
+      <div id="error" class="text-danger fw-bold mt-2"></div>
+    </div>
 
-  <!-- Current Weather -->
-  <div class="container-fluid mt-4">
-    <div class="row align-items-center">
-      <div class="col-12 col-md-6">
-        <div class="card weather_card mx-auto p-3 text-center">
-          <h5 id="cityName">City</h5>
-          <img id="weatherImg" class="weather-icon img-fluid mb-2" src="images/default.png" />
-          <p id="temp" class="temp_display">__ °C</p>
-          <p id="condition">---</p>
+    <!-- Current Weather -->
+    <div class="container-fluid mt-4">
+      <div class="row align-items-center">
+        <div class="col-12 col-md-6">
+          <div class="card weather_card mx-auto p-3 text-center">
+            <h5 id="cityName">Search for a city</h5>
+            <img id="weatherImg" class="weather-icon img-fluid mb-2" src="https://openweathermap.org/img/wn/01d@2x.png"
+              alt="Weather icon" />
+            <p id="temp" class="temp_display">-- °C</p>
+            <p id="condition">Enter a city to see weather</p>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+          <div id="character3D"></div>
         </div>
       </div>
-      
+    </div>
 
-      <div class="col-12 col-md-6 text-center">
-        <img id="weatherAvatar" class="avatar mt-3" src="images/default.png" />
+    <!-- Forecast -->
+    <h1 id="heading" class="mt-5 text-center">5-Day Weather Forecast</h1>
+
+    <div class="container-fluid" id="Future_data">
+      <div class="row justify-content-center" id="forecastRow">
+        <p class="text-center">Search for a city to see the forecast</p>
       </div>
     </div>
   </div>
 
-  <!-- Forecast -->
-  <h1 id="heading" class="mt-5 text-center">5-Day Weather Forecast</h1>
-
-  <div class="container-fluid" id="Future_data">
-    <div class="row justify-content-center" id="forecastRow"></div>
-  </div>
-
-  <!-- JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="script.js"></script>
-</body>
+  <script>
+    const apiKey = "c07ab20c77e555db0c545e6484e1a0d4";
 
-</html>
+    // DOM Elements
+    const searchForm = document.getElementById("search_bar");
+    const searchInput = document.getElementById("search_input");
+    const error = document.getElementById("error");
+    const cityName = document.getElementById("cityName");
+    const tempText = document.getElementById("temp");
+    const conditionText = document.getElementById("condition");
+    const weatherImg = document.getElementById("weatherImg");
+    const forecastRow = document.getElementById("forecastRow");
+    const canvas2D = document.getElementById("weatherCanvas");
+    const ctx = canvas2D.getContext("2d");
+
+    // Canvas setup for weather particles
+    canvas2D.width = window.innerWidth;
+    canvas2D.height = window.innerHeight;
+
+    window.addEventListener("resize", () => {
+      canvas2D.width = window.innerWidth;
+      canvas2D.height = window.innerHeight;
+    });
+
+    // Three.js Setup
+    const container = document.getElementById('character3D');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setClearColor(0x000000, 0);
+    container.appendChild(renderer.domElement);
+
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    scene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight.position.set(5, 10, 5);
+    scene.add(directionalLight);
+
+    const pointLight = new THREE.PointLight(0xffffff, 0.5);
+    pointLight.position.set(-5, 5, 5);
+    scene.add(pointLight);
+
+    // Create 3D Character
+    let character = new THREE.Group();
+    let head, body, leftArm, rightArm, leftLeg, rightLeg;
+    let umbrella, scarf, sunglasses, sweatDrops;
+    let currentAnimation = null;
+
+    function createCharacter() {
+      // Skin material
+      const skinMaterial = new THREE.MeshPhongMaterial({ color: 0xffd1a3 });
+      const shirtMaterial = new THREE.MeshPhongMaterial({ color: 0x4a90e2 });
+      const pantsMaterial = new THREE.MeshPhongMaterial({ color: 0x2c3e50 });
+      const eyeMaterial = new THREE.MeshPhongMaterial({ color: 0x000000 });
+
+      // Head
+      const headGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+      head = new THREE.Mesh(headGeometry, skinMaterial);
+      head.position.y = 2;
+      character.add(head);
+
+      // Eyes
+      const eyeGeometry = new THREE.SphereGeometry(0.08, 16, 16);
+      const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
+      leftEye.position.set(-0.15, 0.1, 0.4);
+      head.add(leftEye);
+
+      const rightEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
+      rightEye.position.set(0.15, 0.1, 0.4);
+      head.add(rightEye);
+
+      // Mouth
+      const mouthGeometry = new THREE.TorusGeometry(0.15, 0.03, 16, 100, Math.PI);
+      const mouthMaterial = new THREE.MeshPhongMaterial({ color: 0x000000 });
+      const mouth = new THREE.Mesh(mouthGeometry, mouthMaterial);
+      mouth.rotation.x = Math.PI;
+      mouth.position.set(0, -0.15, 0.4);
+      head.add(mouth);
+
+      // Body
+      const bodyGeometry = new THREE.CylinderGeometry(0.35, 0.4, 1, 32);
+      body = new THREE.Mesh(bodyGeometry, shirtMaterial);
+      body.position.y = 1;
+      character.add(body);
+
+      // Arms
+      const armGeometry = new THREE.CylinderGeometry(0.1, 0.08, 0.8, 16);
+
+      leftArm = new THREE.Mesh(armGeometry, skinMaterial);
+      leftArm.position.set(-0.5, 1.2, 0);
+      leftArm.rotation.z = Math.PI / 6;
+      character.add(leftArm);
+
+      rightArm = new THREE.Mesh(armGeometry, skinMaterial);
+      rightArm.position.set(0.5, 1.2, 0);
+      rightArm.rotation.z = -Math.PI / 6;
+      character.add(rightArm);
+
+      // Legs
+      const legGeometry = new THREE.CylinderGeometry(0.12, 0.1, 0.9, 16);
+
+      leftLeg = new THREE.Mesh(legGeometry, pantsMaterial);
+      leftLeg.position.set(-0.2, 0.05, 0);
+      character.add(leftLeg);
+
+      rightLeg = new THREE.Mesh(legGeometry, pantsMaterial);
+      rightLeg.position.set(0.2, 0.05, 0);
+      character.add(rightLeg);
+
+      // Accessories
+      createAccessories();
+
+      scene.add(character);
+      character.position.y = -0.5;
+    }
+
+    function createAccessories() {
+      // Umbrella
+      umbrella = new THREE.Group();
+      const umbrellaTop = new THREE.SphereGeometry(0.8, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2);
+      const umbrellaMaterial = new THREE.MeshPhongMaterial({ color: 0xe74c3c, side: THREE.DoubleSide });
+      const umbrellaTop3D = new THREE.Mesh(umbrellaTop, umbrellaMaterial);
+      umbrellaTop3D.rotation.x = Math.PI;
+      umbrellaTop3D.position.y = 3.2;
+
+      const handleGeometry = new THREE.CylinderGeometry(0.02, 0.02, 1.5, 16);
+      const handleMaterial = new THREE.MeshPhongMaterial({ color: 0x333333 });
+      const handle = new THREE.Mesh(handleGeometry, handleMaterial);
+      handle.position.y = 2.5;
+
+      umbrella.add(umbrellaTop3D);
+      umbrella.add(handle);
+      umbrella.visible = false;
+      character.add(umbrella);
+
+      // Scarf
+      const scarfGeometry = new THREE.TorusGeometry(0.35, 0.1, 16, 100);
+      const scarfMaterial = new THREE.MeshPhongMaterial({ color: 0xe74c3c });
+      scarf = new THREE.Mesh(scarfGeometry, scarfMaterial);
+      scarf.position.y = 1.6;
+      scarf.rotation.x = Math.PI / 2;
+      scarf.visible = false;
+      character.add(scarf);
+
+      // Sunglasses
+      sunglasses = new THREE.Group();
+      const lensGeometry = new THREE.BoxGeometry(0.2, 0.15, 0.05);
+      const lensMaterial = new THREE.MeshPhongMaterial({ color: 0x000000 });
+
+      const leftLens = new THREE.Mesh(lensGeometry, lensMaterial);
+      leftLens.position.set(-0.2, 2.1, 0.45);
+
+      const rightLens = new THREE.Mesh(lensGeometry, lensMaterial);
+      rightLens.position.set(0.2, 2.1, 0.45);
+
+      const bridgeGeometry = new THREE.CylinderGeometry(0.02, 0.02, 0.15, 8);
+      const bridge = new THREE.Mesh(bridgeGeometry, lensMaterial);
+      bridge.rotation.z = Math.PI / 2;
+      bridge.position.set(0, 2.1, 0.45);
+
+      sunglasses.add(leftLens);
+      sunglasses.add(rightLens);
+      sunglasses.add(bridge);
+      sunglasses.visible = false;
+      character.add(sunglasses);
+
+      // Sweat drops
+      sweatDrops = new THREE.Group();
+      const sweatGeometry = new THREE.SphereGeometry(0.05, 16, 16);
+      const sweatMaterial = new THREE.MeshPhongMaterial({ color: 0x87ceeb, transparent: true, opacity: 0.8 });
+
+      for (let i = 0; i < 3; i++) {
+        const drop = new THREE.Mesh(sweatGeometry, sweatMaterial);
+        drop.position.set(Math.random() * 0.3 - 0.15, 2 + Math.random() * 0.2, 0.45);
+        drop.userData.initialY = drop.position.y;
+        drop.userData.offset = Math.random() * Math.PI * 2;
+        sweatDrops.add(drop);
+      }
+      sweatDrops.visible = false;
+      character.add(sweatDrops);
+    }
+
+    createCharacter();
+    camera.position.z = 5;
+    camera.position.y = 1;
+
+    // Animation variables
+    let animationTime = 0;
+    let weatherState = 'clear';
+
+    function animateCharacter() {
+      animationTime += 0.05;
+
+      // Reset animations
+      leftArm.rotation.z = Math.PI / 6;
+      rightArm.rotation.z = -Math.PI / 6;
+      leftArm.rotation.x = 0;
+      rightArm.rotation.x = 0;
+      character.rotation.y = Math.sin(animationTime * 0.3) * 0.1;
+
+      if (weatherState === 'sunny') {
+        // Sweating animation
+        sunglasses.visible = true;
+        sweatDrops.visible = true;
+        sweatDrops.children.forEach((drop, i) => {
+          drop.position.y = drop.userData.initialY + Math.sin(animationTime * 2 + drop.userData.offset) * 0.2 - 0.3;
+          if (drop.position.y < 1.5) drop.position.y = drop.userData.initialY;
+        });
+        // Wiping forehead
+        rightArm.rotation.z = -Math.PI / 3 + Math.sin(animationTime * 3) * 0.2;
+        rightArm.rotation.x = -Math.PI / 4;
+      } else if (weatherState === 'cold') {
+        // Shivering animation
+        scarf.visible = true;
+        character.position.x = Math.sin(animationTime * 15) * 0.05;
+        leftArm.rotation.x = Math.sin(animationTime * 15) * 0.1;
+        rightArm.rotation.x = -Math.sin(animationTime * 15) * 0.1;
+        body.rotation.z = Math.sin(animationTime * 15) * 0.05;
+      } else if (weatherState === 'rainy') {
+        // Holding umbrella
+        umbrella.visible = true;
+        rightArm.rotation.z = -Math.PI / 2 - 0.3;
+        rightArm.rotation.x = -0.3;
+        umbrella.rotation.z = Math.sin(animationTime) * 0.05;
+      } else if (weatherState === 'thunderstorm') {
+        // Scared animation
+        character.position.y = -0.5 + Math.sin(animationTime * 10) * 0.05;
+        leftArm.rotation.z = Math.PI / 2 + Math.sin(animationTime * 8) * 0.2;
+        rightArm.rotation.z = -Math.PI / 2 - Math.sin(animationTime * 8) * 0.2;
+        leftArm.rotation.x = -Math.PI / 3;
+        rightArm.rotation.x = -Math.PI / 3;
+      } else if (weatherState === 'windy') {
+        // Wind blown animation
+        character.rotation.z = Math.sin(animationTime * 2) * 0.15;
+        leftArm.rotation.z = Math.PI / 4 + Math.sin(animationTime * 2) * 0.3;
+        rightArm.rotation.z = -Math.PI / 4 - Math.sin(animationTime * 2) * 0.3;
+        leftArm.rotation.y = Math.sin(animationTime * 2) * 0.2;
+        rightArm.rotation.y = -Math.sin(animationTime * 2) * 0.2;
+      } else {
+        // Clear/normal animation - gentle breathing
+        body.scale.y = 1 + Math.sin(animationTime * 2) * 0.02;
+        leftArm.rotation.x = Math.sin(animationTime) * 0.1;
+        rightArm.rotation.x = -Math.sin(animationTime) * 0.1;
+      }
+    }
+
+    function hideAllAccessories() {
+      umbrella.visible = false;
+      scarf.visible = false;
+      sunglasses.visible = false;
+      sweatDrops.visible = false;
+    }
+
+    function setWeatherState(weather, temp) {
+      hideAllAccessories();
+      const w = weather.toLowerCase();
+
+      if (w.includes('clear') || w.includes('sunny')) {
+        weatherState = 'sunny';
+      } else if (w.includes('rain') || w.includes('drizzle')) {
+        weatherState = 'rainy';
+      } else if (w.includes('snow') || temp < 5) {
+        weatherState = 'cold';
+      } else if (w.includes('thunder') || w.includes('storm')) {
+        weatherState = 'thunderstorm';
+      } else if (w.includes('wind')) {
+        weatherState = 'windy';
+      } else {
+        weatherState = 'clear';
+      }
+    }
+
+    // 3D Animation Loop
+    function animate3D() {
+      requestAnimationFrame(animate3D);
+      animateCharacter();
+      renderer.render(scene, camera);
+    }
+    animate3D();
+
+    // Resize handler for 3D
+    window.addEventListener('resize', () => {
+      camera.aspect = container.clientWidth / container.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(container.clientWidth, container.clientHeight);
+    });
+
+    // Weather particles system
+    let particles = [];
+
+    class Particle {
+      constructor(type) {
+        this.x = Math.random() * canvas2D.width;
+        this.y = type === "snow" ? Math.random() * canvas2D.height : -10;
+        this.type = type;
+
+        if (type === "rain") {
+          this.speed = Math.random() * 5 + 10;
+          this.length = Math.random() * 20 + 10;
+          this.opacity = Math.random() * 0.5 + 0.5;
+        } else if (type === "snow") {
+          this.speed = Math.random() * 2 + 1;
+          this.size = Math.random() * 4 + 2;
+          this.opacity = Math.random() * 0.6 + 0.4;
+          this.drift = Math.random() * 2 - 1;
+        } else if (type === "cloud") {
+          this.speed = Math.random() * 0.5 + 0.2;
+          this.size = Math.random() * 60 + 40;
+          this.opacity = Math.random() * 0.3 + 0.1;
+          this.y = Math.random() * canvas2D.height * 0.5;
+        }
+      }
+
+      update() {
+        if (this.type === "rain") {
+          this.y += this.speed;
+          if (this.y > canvas2D.height) {
+            this.y = -this.length;
+            this.x = Math.random() * canvas2D.width;
+          }
+        } else if (this.type === "snow") {
+          this.y += this.speed;
+          this.x += this.drift;
+          if (this.y > canvas2D.height) {
+            this.y = -10;
+            this.x = Math.random() * canvas2D.width;
+          }
+          if (this.x > canvas2D.width) this.x = 0;
+          if (this.x < 0) this.x = canvas2D.width;
+        } else if (this.type === "cloud") {
+          this.x += this.speed;
+          if (this.x > canvas2D.width + this.size) {
+            this.x = -this.size;
+          }
+        }
+      }
+
+      draw() {
+        ctx.save();
+        if (this.type === "rain") {
+          ctx.strokeStyle = `rgba(174, 194, 224, ${this.opacity})`;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(this.x, this.y);
+          ctx.lineTo(this.x, this.y + this.length);
+          ctx.stroke();
+        } else if (this.type === "snow") {
+          ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (this.type === "cloud") {
+          ctx.fillStyle = `rgba(200, 200, 220, ${this.opacity})`;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size * 0.6, 0, Math.PI * 2);
+          ctx.arc(this.x + this.size * 0.5, this.y, this.size * 0.8, 0, Math.PI * 2);
+          ctx.arc(this.x + this.size, this.y, this.size * 0.6, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+    }
+
+    function createParticles(type, count) {
+      particles = [];
+      for (let i = 0; i < count; i++) {
+        particles.push(new Particle(type));
+      }
+    }
+
+    function animate2D() {
+      ctx.clearRect(0, 0, canvas2D.width, canvas2D.height);
+
+      particles.forEach(particle => {
+        particle.update();
+        particle.draw();
+      });
+
+      requestAnimationFrame(animate2D);
+    }
+    animate2D();
+
+    // Search Event
+    searchForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const city = searchInput.value.trim();
+
+      if (!city) {
+        error.textContent = "⚠️ Please enter a city name";
+        return;
+      }
+
+      error.textContent = "";
+      fetchWeather(city);
+    });
+
+    // Fetch current weather
+    async function fetchWeather(city) {
+      try {
+        const res = await fetch(
+          `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`
+        );
+
+        if (!res.ok) throw new Error("City not found");
+
+        const data = await res.json();
+
+        cityName.textContent = `${data.name}, ${data.sys.country}`;
+        tempText.textContent = `${Math.round(data.main.temp)} °C`;
+        conditionText.textContent = data.weather[0].description.charAt(0).toUpperCase() +
+          data.weather[0].description.slice(1);
+
+        weatherImg.src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png`;
+        weatherImg.alt = data.weather[0].description;
+
+        setWeatherState(data.weather[0].main, data.main.temp);
+        updateWeatherParticles(data.weather[0].main);
+        fetchForecast(city);
+      } catch (err) {
+        error.textContent = "❌ Unable to fetch weather data. Please check the city name.";
+        console.error(err);
+      }
+    }
+
+    function updateWeatherParticles(weather) {
+      const w = weather.toLowerCase();
+
+      if (w.includes("rain") || w.includes("drizzle")) {
+        createParticles("rain", 150);
+      } else if (w.includes("snow")) {
+        createParticles("snow", 100);
+      } else if (w.includes("cloud")) {
+        createParticles("cloud", 8);
+      } else {
+        particles = [];
+      }
+    }
+
+    // Fetch 5-day forecast
+    async function fetchForecast(city) {
+      try {
+        const res = await fetch(
+          `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric`
+        );
+
+        if (!res.ok) throw new Error("Forecast not found");
+
+        const data = await res.json();
+        forecastRow.innerHTML = "";
+
+        for (let i = 0; i < data.list.length; i += 8) {
+          const forecast = data.list[i];
+          const date = new Date(forecast.dt * 1000);
+          const day = date.toLocaleDateString("en-US", { weekday: "short" });
+          const fullDate = date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+
+          forecastRow.innerHTML += `
+            <div class="col-6 col-md-2 mb-4">
+              <div class="card p-3 text-center">
+                <h6 class="fw-bold">${day}</h6>
+                <small class="text-muted">${fullDate}</small>
+                <img src="https://openweathermap.org/img/wn/${forecast.weather[0].icon}@2x.png" 
+                     alt="${forecast.weather[0].description}" 
+                     class="img-fluid" />
+                <p class="mb-1 fw-bold">${Math.round(forecast.main.temp)} °C</p>
+                <small>${forecast.weather[0].description}</small>
+              </div>
+            </div>
+          `;
+        }
+      } catch (err) {
+        forecastRow.innerHTML = '<p class="text-center text-danger">Unable to load forecast</p>';
+        console.error(err);
+      }
+    }
+
+    // Theme Toggle
+    const themeToggle = document.getElementById("themeToggle");
+
+    themeToggle.addEventListener("click", () => {
+      document.body.classList.toggle("light-mode");
+
+      if (document.body.classList.contains("light-mode")) {
+        themeToggle.textContent = "☀️ Light Mode";
+          themeToggle.textContent = "☀️ Light Mode";
+      } else {
+        themeToggle.textContent = "🌙 Dark Mode";
+      }
+    });
+
+            // Initial default particles (clear weather)
+            particles = [];
+
+            // Optional: Load default city on page load
+            window.addEventListener("load", () => {
+              fetchWeather("New York");
+            });
+          </script>
+  </body>
+  
+  </html>
