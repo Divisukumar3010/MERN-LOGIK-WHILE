@@ -10,7 +10,7 @@ const Text = () => {
       <input type="text" value={text} onInput={(e) => setText(e.target.value)} />
       {/* <p>{text}</p> */}
       <button onClick={() => setDisplayText(text)}>click Me</button>
-      <p>{displayText}</p>
+      <h1>{displayText}</h1>
     </div>
   )
 }
