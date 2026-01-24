@@ -1,24 +1,31 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import './App.css'
-import { NavbarEx } from './components/NavbarEx'
+import React from 'react'
+import NavScrollExample from './components/NavbarComp'
+import Footer from './components/Footer'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Footer } from './components/Footer';
+import { BrowserRouter as Router, Routes, Route, BrowserRouter } from "react-router-dom"
 import Home from './pages/Home';
 import About from './pages/About';
 import Projects from './pages/Projects';
+import UserProfile from './pages/UserProfile';
 
-function App() {
+
+
+const App = () => {
   return (
-    <BrowserRouter>
-        <NavbarEx />
-          <Routes>
-            <Route path='/' element={<Home />} />
-            <Route path='/about' element={<About />} />
-            <Route path='/projects' element={<Projects />} />
-          </Routes>
+    <div>
+
+      <Router>
+        <NavScrollExample />
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path='/about' element={<About />} />
+          <Route path='/projects' element={<Projects />} />
+          <Route path='/user/:userId' element={<UserProfile />} />
+        </Routes>
         <Footer />
-    </BrowserRouter>
+      </Router>
+    </div>
   )
 }
 
-export default App 
+export default App
